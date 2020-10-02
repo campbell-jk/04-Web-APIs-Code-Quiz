@@ -1,0 +1,14 @@
+h1 {
+    padding: 6rem 0 2rem 0;
+}
+
+#begin-btn {
+    border: .1rem solid purple;
+    background-color: purple;
+    margin-top: 2rem;
+}
+
+#begin-btn:hover {
+    background-color: white;
+    color: purple;
+}
