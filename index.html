@@ -4,51 +4,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coding Quiz Challenge</title>
-    <link rel="stylesheet" type="text/css" href="./Assets/style.css">
+    <title>JavaScript Fundamentals Quiz</title>
+    <link rel="stylesheet" type="text/css" href="./Assets/css/style.css">
 </head>
 
 <body>
-    <div class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-        <a class="navbar-brand" href="index.html">Start Over</a>
-        <a class="navbar-brand" href="./Assets/highscores.html">Highscores</a>
-        <span class="timer ml-auto">Time:
-            <span id="timer-count">0</span>
-        </span>
+    <span id="view-scores">View High Scores</span>
+    <div class="intro-container">
+        <h1>Coding Quiz Challenge</h1>
+        <p>
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Mollitia laudantium fugit facere nostrum officia?
+            Laboriosam, vel quod. Cumque earum autem magni pariatur temporibus perspiciatis minus modi, itaque harum
+            aspernatur. Aliquam?
+        </p>
+        <button id="start-button">Start Quiz</button>
     </div>
-    <main class="container justify-content-center text-center">
-        <div class="row">
-            <div class="column-md4">
-                <h1>Web Development Coding Quiz</h1>
-                <p>
-                    Ready to find out if your coding skills are up to snuff?
-                    <br><br>
-                    You'll have 2 minutes to answer as many questions relating to HTML, CSS, and JavaScript as possible.
-                    <br><br>
-                    Each correct answer will award you with 25 points and an additional 5 seconds to your timer.
-                    <br><br>
-                    Each incorrect answer will take 10 seconds from your max time.
-                </p>
-                <button id="begin-btn" type="button" class="btn btn-info">
-                    Click Here to Start!
-                </button>
-            </div>
-
-        </div>
-    </main>
-
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
-        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
-        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
-        crossorigin="anonymous"></script>
-    <script src="script.js"></script>
+    <div class="timer-container">
+        <span>Time left:</span>
+        <span id="timer">10</span>
+    </div>
+    <div class="question-container">
+        <div id="question"></div>
+        <ul>
+            <li id="a-1"></li>
+            <li id="a-2"></li>
+            <li id="a-3"></li>
+            <li id="a-4"></li>
+        </ul>
+    </div>
+    <span id="answer-result"></span>
+    <div class="gameover-container">
+        <h2>All Done!</h2>
+        <p>Your final score is: <span id="final-score"></span></p>
+        <form>
+            <label for="user-initials">Enter Initials</label>
+            <input type="text" id="user-initials" name="user-initials">
+        </form>
+        <button id="submit-score">Submit</button>
+    </div>
+    <div class="score-container">
+        <h2>High Scores</h2>
+        <div id="scores-table"></div>
+        <button id="restart-quiz">Go Back</button>
+        <button id="clear-scores">Clear Highscores</button>
+    </div>
+    <script src="./Assets/js/app.js"></script>
 </body>
 
 </html>

@@ -1,0 +1,3 @@
+.question-container, .timer-container, .score-container, .gameover-container {
+    display: none;
+}
