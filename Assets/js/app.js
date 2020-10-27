@@ -1,5 +1,4 @@
-// Variables
-// Array of Questions and setting index
+// Array of questions for quiz
 const questions = [
     {
         question: "What is the difference between `let` and `const` variables?",
@@ -101,149 +100,191 @@ const questions = [
         ],
         answer: 0},
 ];
-let currentQuestionIndex = 0;
 
-// All timer variables
-const startTime = 120;
-let timerId = 0;
-let timerContainer = document.querySelector(".timer-container")
-let timerEl = document.getElementById("timer");
-let timeLeft = startTime;
-const penalty = 15;
+function hideAll() {
+    startElements.hide();
+    timeElements.hide();
+    scoreElements.hide();
+    questionElements.hide();
+    gameOverElements.hide();
+};
 
-// Handles display of time left and calls gameOver when 0
-function timer() { 
-    // gets called every 1000 milliseconds
-    timeLeft--;
-    timerEl.innerHTML = timeLeft;
-    if (timeLeft <= 0) {
-        gameOver();
+let startElements = {
+    button: document.getElementById("start-button"),
+    container: document.querySelector(".intro-container"),
+    init: function() {
+        console.log(this);
+        this.button.addEventListener("click", this.startGame);
+    },
+    hide: function () { this.container.style.display = "none"; },
+    show: function () { this.container.style.display = "initial"; },
+    startGame: function() {
+        hideAll();
+        timeElements.start();
+        timeElements.show(); 
+        scoreElements.reset();
+        questionElements.resetIndex();
+        questionElements.next();
     }
+};
+
+// All timer variables grouped in an object
+let timeElements = {
+    // id is used to set and clear timer interval
+    id: 0,
+    starting: 120,
+    container: document.querySelector(".timer-container"),
+    timer: document.getElementById("timer"),
+    remaining: 0,
+    penalty: 15,
+    init: function() {
+        this.remaining = this.starting;
+    },
+    // This function decrements the timer and handles game over if it reaches 0
+    timerFunct: function() {
+        this.remaining--;
+        this.timer.innerHTML = this.remaining;
+        if (this.remaining <= 0) {
+            gameOverElements.endGame();
+        }
+    },
+    start: function() { 
+        this.remaining = this.starting;
+        // Checks that timer has been cleared
+        if (this.id != 0) { this.stop() };
+        this.id = setInterval(() =>  timeElements.timerFunct(), 1000);
+        this.timer.innerHTML = this.remaining;
+    },
+    stop: function() {
+        clearInterval(this.id);
+    },
+    wrongAnswer: function() {
+        this.remaining -= this.penalty;
+        this.timer.innerHTML = this.remaining;
+    },
+    // Function to hide timer when not being used
+    hide: function () { this.container.style.display = "none"; },
+    show: function () { this.container.style.display = "initial"; }
+};
+
+let scoreElements = {
+    current: 0,
+    correctValue: 10,
+    highScores: [],
+    container: document.querySelector(".score-container"),
+    table: document.getElementById("scores-table"),
+    finalScoreLabel: document.getElementById("final-score"),
+    buttons: {
+        viewScores: document.getElementById("view-scores"),
+        clearScores: document.getElementById("clear-scores")
+    },
+    reset: function() {this.current = 0;},
+    addScore: function (initials) { 
+        this.highScores.push({ initials: initials, score: this.current });
+        // Compares the values of the score elements and sorts by highest
+        this.highScores.sort((a, b) => b.score - a.score);
+    },
+    updateFinalScore: function () { this.finalScoreLabel.innerHTML = this.current; },
+    viewScores: function() { 
+        hideAll();
+        this.show();
+        this.table.innerHTML = "";
+        this.highScores.forEach((score, index) => {
+            this.table.innerHTML += ((index + 1) + ". " + score.initials + " - " + score.score + "<br>");
+        })
+    },
+    correctAnswer: function() {
+        this.current += this.correctValue;
+    },    
+    init: function() {
+        this.buttons.viewScores.addEventListener("click", this.viewScores);
+        this.buttons.clearScores.addEventListener("click", () => {
+            // When Clear Scores is clicked, empty highScores array and clear table
+            this.highScores = [];
+            this.table.innerHTML = "";
+        })
+    },
+    hide: function () { this.container.style.display = "none"; },
+    show: function () { this.container.style.display = "initial"; }
+};
+
+let questionElements = {
+    container: document.querySelector(".question-container"),
+    questionText: document.getElementById("question"),
+    answerText: [
+        document.getElementById("a-1"),
+        document.getElementById("a-2"),
+        document.getElementById("a-3"),
+        document.getElementById("a-4")
+    ],
+    resultText: document.getElementById("answer-result"),
+    currentIndex: 0,
+    resetIndex: function () { this.currentIndex = 0; },
+    init: function() {
+        this.answerText.forEach((element, index) => {
+            element.addEventListener("click", () => this.select(index));
+        })
+    },
+    next: function() { 
+        let currentQuestion = questions[this.currentIndex];
+        this.questionText.innerHTML = currentQuestion.question;
+        this.answerText.forEach((answer, index) => {
+            answer.innerHTML = currentQuestion.choices[index];
+        });
+        this.show();
+    },
+    select: function(answer) {
+        let currentQuestion = questions[this.currentIndex];
+        if (answer == currentQuestion.answer) {
+            this.resultText.innerHTML = "Correct!";
+            scoreElements.correctAnswer();
+        } else {
+            this.resultText.innerHTML = "Wrong!";
+            timeElements.wrongAnswer();
+            setTimeout(() => this.resultText.innerHTML = "", 2000);
+        }
+        this.currentIndex++;
+        if (this.currentIndex < questions.length) {
+            this.next();
+        } else {
+            gameOverElements.endGame();
+        }
+    },
+    hide: function () { this.container.style.display = "none"; },
+    show: function () { this.container.style.display = "initial"; }
+};
+
+let gameOverElements = {
+    container: document.querySelector(".gameover-container"),
+    initialsField: document.getElementById("user-initials"),
+    buttons: {
+        submit: document.getElementById("submit-score"),
+        restart: document.getElementById("restart-quiz")
+    },
+    init: function() {
+        this.buttons.submit.addEventListener("click", () => {
+            scoreElements.addScore(this.initialsField.value);
+            scoreElements.viewScores();
+        });
+        this.buttons.restart.addEventListener("click", () => {
+            hideAll();
+            startElements.show();
+        })
+    },
+    endGame: function() {
+        timeElements.stop();
+        hideAll();
+        timeElements.show();
+        scoreElements.updateFinalScore();
+        this.show();
+
+    } ,
+    hide: function () { this.container.style.display = "none"; },
+    show: function() { this.container.style.display = "initial"; }
 }
 
-// All elements/variables relating to score
-let score = 0;
-const correct = 10;
-let highScoreArr = [];
-let scoreContainer = document.querySelector(".score-container");
-let scoresTable = document.getElementById("scores-table");
-let viewScoreBtn = document.getElementById("view-scores");
-viewScoreBtn.addEventListener("click", () => {
-    introContainer.style.display = "none";
-    questionContainer.style.display = "none";
-    gameOverContainer.style.display = "none";
-    timerContainer.style.display = "none";
-    clearInterval(timerId);
-    viewHighScores();
-});
-
-// Application Variables
-let startButton = document.getElementById("start-button");
-let introContainer = document.querySelector(".intro-container");
-let questionContainer = document.querySelector(".question-container");
-let questionText = document.getElementById("question");
-let answerOne = document.getElementById("a-1");
-answerOne.addEventListener("click", () => selectAnswer(0));
-let answerTwo = document.getElementById("a-2");
-answerTwo.addEventListener("click", () => selectAnswer(1));
-let answerThree = document.getElementById("a-3");
-answerThree.addEventListener("click", () => selectAnswer(2));
-let answerFour = document.getElementById("a-4");
-answerFour.addEventListener("click", () => selectAnswer(3));
-let resultText = document.getElementById("answer-result");
-let gameOverContainer = document.querySelector(".gameover-container");
-let finalScore = document.getElementById("final-score");
-let submitButton = document.getElementById("submit-score");
-let userInitials = document.getElementById("user-initials");
-let restartBtn = document.getElementById("restart-quiz");
-restartBtn.addEventListener("click", () => {
-    scoreContainer.style.display = "none";
-    introContainer.style.display = "initial";
-});
-let clearScoresBtn = document.getElementById("clear-scores");
-clearScoresBtn.addEventListener("click", () => {
-    highScoreArr = [];
-    scoresTable.innerHTML = "";
-});
-// -------------------------------------------
-
-// WHEN I click the start button
-startButton.addEventListener("click", startGame);
-
-submitButton.addEventListener("click", () => {
-    addHighScore(userInitials.value, score);
-    viewHighScores();
-    console.log("Submit clicked");
-    });
-
-function startGame() {
-    timeLeft = startTime;
-    score = 0;
-    currentQuestionIndex = 0;
-    introContainer.style.display = "none";
-    timerContainer.style.display = "initial";
-    timerEl.innerHTML = timeLeft;
-    // THEN a timer starts
-    timerId = setInterval(timer, 1000);
-    // and I am presented with a question
-    nextQuestion(currentQuestionIndex);
-    // if no more questions: gameOver();
-}
-
-// WHEN I answer a question
-function selectAnswer(answer) { 
-    let currentQuestion = questions[currentQuestionIndex];
-    if (answer == currentQuestion.answer) {
-        resultText.innerHTML = "Correct!";
-        score += correct;
-    } else {
-        resultText.innerHTML = "Wrong!";
-        timeLeft -= penalty;
-        timerEl.innerHTML = timeLeft;
-    }
-    setTimeout(() => resultText.innerHTML = "", 2000);
-
-    currentQuestionIndex++;
-    if (currentQuestionIndex < questions.length) {
-        nextQuestion();
-    } else {
-        gameOver();
-    }
-}
-// THEN I am presented with another question
-function nextQuestion() {
-    let currentQuestion = questions[currentQuestionIndex];
-    questionText.innerHTML = currentQuestion.question;
-    answerOne.innerHTML = currentQuestion.choices[0];
-    answerTwo.innerHTML = currentQuestion.choices[1];
-    answerThree.innerHTML = currentQuestion.choices[2];
-    answerFour.innerHTML = currentQuestion.choices[3];
-    // when called, value will be current index of Questions array
-    // update question container with currentQuestion values
-    // set display to visible
-    questionContainer.style.display = "initial";
-    console.log("Question: " + question);
-}
-
-function gameOver() {
-    console.log("Game Over!");
-    clearInterval(timerId);
-    questionContainer.style.display = "none";
-    finalScore.innerHTML = score;
-    gameOverContainer.style.display = "initial";
-}
-
-function viewHighScores() { 
-    gameOverContainer.style.display = "none";
-    timerContainer.style.display = "none";
-    scoreContainer.style.display = "initial";
-    scoresTable.innerHTML = "";
-    highScoreArr.forEach((highScore, index) => {
-        scoresTable.innerHTML += ((index + 1) + ". " + highScore.initials + " - " + highScore.score + "<br>");
-    })
-}
-
-function addHighScore(initials, finalScore) {
-    highScoreArr.push({ initials: initials, score: finalScore });
-    console.log(highScoreArr);
-}
+startElements.init();
+timeElements.init();
+scoreElements.init();
+questionElements.init();
+gameOverElements.init();
