@@ -1,3 +1,49 @@
-.question-container, .timer-container, .score-container, .gameover-container {
-    display: none;
+* {
+    font-family: Roboto, sans-serif;
+    font-size: 1.2rem;
+}
+
+h2 {
+    font-size: 1.6rem;
+    font-weight: bold;
+}
+
+button {
+    background-color: purple;
+    color: white;
+    border-radius: 5px;
+    padding: .5rem;
+    font-size: 1rem;
+}
+
+.hidden {
+    display: none;    
+}
+
+.intro-container {    
+    text-align: center;
+}
+
+.game-containers {
+    width: 50%;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+}
+
+#answer-result {
+    font-style: italic;
+    border-top: .5px solid grey;
+    color: grey;
+}
+
+#view-scores {
+    color: purple;
+    font-weight: bold;
+}
+
+.timer-container {
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    font-weight: bold;
 }

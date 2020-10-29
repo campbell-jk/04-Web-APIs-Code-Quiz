@@ -61,44 +61,44 @@ const questions = [
         answer: 3
     },
     {
-        question: "Question 7",
+        question: "Which of the following would pop up a window saying 'Hello World!'?",
         choices: [
-            "Choice 1",
-            "Choice 2",
-            "Choice 3",
-            "Choice 4"
+            "console.log('Hello World!')",
+            "spamBox = 'Hello World!')",
+            "alert = 'Hello World!'",
+            "alert('Hello World!')"
+        ],
+        answer: 3
+    },
+    {
+        question: "Which notation is correct for single line JavaScript comments?",
+        choices: [
+            "/* This is a comment! */",
+            "~ This is a comment! ~",
+            "// This is a comment!",
+            " &lt!-- This is a comment! --&gt"
+        ],
+        answer: 2
+    },
+    {
+        question: "Which naming convention is considered the standard for JavaScript programming?",
+        choices: [
+            "camelCase",
+            "PascalCase",
+            "lowercase",
+            "just-in-case"
         ],
         answer: 0
     },
     {
-        question: "Question 8",
+        question: "Which of the following syntax is used to declare a function in JavaScript?",
         choices: [
-            "Choice 1",
-            "Choice 2",
-            "Choice 3",
-            "Choice 4"
-        ],
-        answer: 0
+            "myFunction() = <>",
+            "myFunction {function = (x,y)}",
+            "function myFunction()",
+            "const function = (x, y)",],
+        answer: 2
     },
-    {
-        question: "Question 9",
-        choices: [
-            "Choice 1",
-            "Choice 2",
-            "Choice 3",
-            "Choice 4"
-        ],
-        answer: 0
-    },
-    {
-        question: "Question 10",
-        choices: [
-            "Choice 1",
-            "Choice 2",
-            "Choice 3",
-            "Choice 4"
-        ],
-        answer: 0},
 ];
 
 function hideAll() {
@@ -117,7 +117,7 @@ let startElements = {
         this.button.addEventListener("click", this.startGame);
     },
     hide: function () { this.container.style.display = "none"; },
-    show: function () { this.container.style.display = "initial"; },
+    show: function () { this.container.style.display = "block"; },
     startGame: function() {
         hideAll();
         timeElements.start();
@@ -136,7 +136,7 @@ let timeElements = {
     container: document.querySelector(".timer-container"),
     timer: document.getElementById("timer"),
     remaining: 0,
-    penalty: 15,
+    penalty: 10,
     init: function() {
         this.remaining = this.starting;
     },
@@ -164,7 +164,7 @@ let timeElements = {
     },
     // Function to hide timer when not being used
     hide: function () { this.container.style.display = "none"; },
-    show: function () { this.container.style.display = "initial"; }
+    show: function () { this.container.style.display = "block"; }
 };
 
 let scoreElements = {
@@ -205,7 +205,7 @@ let scoreElements = {
         })
     },
     hide: function () { this.container.style.display = "none"; },
-    show: function () { this.container.style.display = "initial"; }
+    show: function () { this.container.style.display = "block"; }
 };
 
 let questionElements = {
@@ -225,7 +225,7 @@ let questionElements = {
             element.addEventListener("click", () => this.select(index));
         })
     },
-    next: function() { 
+    next: function () { 
         let currentQuestion = questions[this.currentIndex];
         this.questionText.innerHTML = currentQuestion.question;
         this.answerText.forEach((answer, index) => {
@@ -237,12 +237,14 @@ let questionElements = {
         let currentQuestion = questions[this.currentIndex];
         if (answer == currentQuestion.answer) {
             this.resultText.innerHTML = "Correct!";
+            this.resultText.style.display = "block";
             scoreElements.correctAnswer();
         } else {
             this.resultText.innerHTML = "Wrong!";
             timeElements.wrongAnswer();
-            setTimeout(() => this.resultText.innerHTML = "", 2000);
+            this.resultText.style.display = "block";
         }
+        setTimeout(() => this.resultText.style.display = "none", 2000);
         this.currentIndex++;
         if (this.currentIndex < questions.length) {
             this.next();
@@ -251,7 +253,7 @@ let questionElements = {
         }
     },
     hide: function () { this.container.style.display = "none"; },
-    show: function () { this.container.style.display = "initial"; }
+    show: function () { this.container.style.display = "block"; }
 };
 
 let gameOverElements = {
@@ -280,7 +282,7 @@ let gameOverElements = {
 
     } ,
     hide: function () { this.container.style.display = "none"; },
-    show: function() { this.container.style.display = "initial"; }
+    show: function() { this.container.style.display = "block"; }
 }
 
 startElements.init();
