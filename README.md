@@ -9,4 +9,5 @@ Homework for Week 4 of UW Coding Boot Camp
 > [Homework Instructions](./homework-instructions.md)
 
 ## Screenshot
-![Screen capture of deployed site](./screenshot.png)
+![Screen capture of deployed site](/Assets/screenshot.png)
+
